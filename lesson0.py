@@ -1,23 +1,20 @@
 import requests
+import exceptions
+
 BASE_URL = "https://jsonplaceholder.typicode.com/users/"
 
-class UserNotFoundError(Exception):
-    pass
-
-class APIError(Exception):
-    pass
 
 def fetch_user(url: str, user_id: int) -> dict:
     try:
         response = requests.get(f"{url.rstrip('/')}/{user_id}", timeout=3)
 
         if response.status_code == 404:
-            raise UserNotFoundError(f"User {user_id} was not found.")
+            raise exceptions.UserNotFoundError(f"User {user_id} was not found.")
 
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        raise APIError(f"Failed to fetch user {user_id}: {e}") from e
+        raise exceptions.APIError(f"Failed to fetch user {user_id}: {e}") from e
 
 
 def clean_string(value):
@@ -51,9 +48,9 @@ def transform_user(raw_user: dict) -> dict:
 if __name__ == "__main__":
     try:
         print(transform_user({"email": "a@b.com", "address": "Dhaka"}))
-    except UserNotFoundError:
+    except exceptions.UserNotFoundError:
         print("User not found. Please check the user ID.")
-    except APIError:
+    except exceptions.APIError:
         print("API is unavailable. Please try again late.")
     except ValueError as e:
         print(f"Invalid user data: {e}")
