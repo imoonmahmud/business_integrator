@@ -3,3 +3,12 @@ class UserNotFoundError(Exception):
 
 class APIError(Exception):
     pass
+
+class ResourceNotFoundError(APIError):
+    pass
+
+class InvalidJSONError(APIError):
+    pass
+
+class InvalidDataFormatError(APIError):
+    pass 
